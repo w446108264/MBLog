@@ -4,6 +4,8 @@
 
 MBLog,一个神奇的Log.支持输入任意类型;支持输出自动格式化xml，json，url，object;支持输出可跳转的Log函数定位信息;支持自定义输出样式
 
+<img src="https://github.com/w446108264/MBLog/raw/master/output/drymartine.jpg" width="100%" /> 
+
 # Features
 
 * API > 9 
@@ -11,13 +13,9 @@ MBLog,一个神奇的Log.支持输入任意类型;支持输出自动格式化xml
 * 支持输出自动格式化xml，json，url，object
 * 支持输出可跳转的Log函数定位信息
 * 支持自定义输出样式 
-
-<img src="output/drymartine.jpg" width="100%" /> 
-
-
-
+ 
 # 格式化效果
-<img src="output/format.png" width="100%" /> 
+<img src="https://github.com/w446108264/MBLog/raw/master/output/format.png"/> 
 
 # 使用
 
@@ -73,7 +71,7 @@ public class App extends Application {
 
 支持任意Object，参数间通过换行分割
 
-<img src="output/666.jpg" /> 
+<img src="https://github.com/w446108264/MBLog/raw/master/output/666.jpg" /> 
 
  * L.e(Object... args);
  * L.e(Throwable throwable, Object... args);
