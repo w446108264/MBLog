@@ -122,11 +122,27 @@ public class MBPrinter implements Printer {
     }
 
     protected synchronized void log(int logType, Object... args) {
-        if(!logBuilder.isPrint){
+
+        if(logBuilder == null){
             return;
         }
-        String content = getMethod() + "\n" + getContent(args);
-        log(logType, logBuilder.tag, content);
+        if(logBuilder.printType == null){
+            logBuilder.printType = L.PRINT.MBLOG;
+        }
+
+        if(L.PRINT.NONE == logBuilder.printType){
+            return;
+        } else if(L.PRINT.SYSTEM == logBuilder.printType){
+            logChunk(logType, logBuilder.tag, getContent(args));
+            return;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        if(L.PRINT.MBLOG == logBuilder.printType){
+            builder.append(getMethod() + "\n");
+        }
+        builder.append(getContent(args));
+        log(logType, logBuilder.tag, builder.toString());
     }
 
     protected String getMethod() {
@@ -163,7 +179,9 @@ public class MBPrinter implements Printer {
                 continue;
             }
             String content = null;
-            if (logBuilder.parserList != null) {
+            if (logBuilder.parserList != null
+                    && L.PRINT.NONE != logBuilder.printType
+                    && L.PRINT.SYSTEM != logBuilder.printType) {
                 for (Parser parser : logBuilder.parserList) {
                     content = parser.parse(object);
                     if (!TextUtils.isEmpty(content)) {

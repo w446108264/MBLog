@@ -22,14 +22,14 @@ public class App extends Application {
          */
         L.initPrinter(new MBPrinter())
                 .setTag("MBLog")
-                .setPrint(true)
+                .setPrint(L.PRINT.MBLOG)
                 .setParserList(new JsonParser(), new UrlParser(), new ObjectParser());
 
         /**
          * 支持在程序中动态的改变print的设置
          */
         L.setTag("MBLog");
-        L.setPrint(true);
+        L.setPrint(L.PRINT.MBLOG);
         L.setParserList(new JsonParser(), new UrlParser(), new ObjectParser());
     }
 }
