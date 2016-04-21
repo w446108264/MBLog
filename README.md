@@ -10,7 +10,9 @@ MBLog,一个神奇的Log.支持输入任意类型;支持输出自动格式化xml
 
 * API > 9 
 * 支持输入任意类型
+* 支持可变参数
 * 支持输出自动格式化xml，json，url，object
+* 支持自定义格式Parser
 * 支持输出可跳转的Log函数定位信息
 * 支持自定义输出样式 
  
@@ -33,18 +35,19 @@ public class App extends Application {
                 // Tag
                 .setTag("MBLog")
                 // print输出开关
-                .setPrint(true)
+                .setPrint(L.PRINT.MBLOG)
                 // 增加Parser，MBLog会依次根据Parser增加的顺序识别输入的内容。
                 // 内容识别并格式化后即结束
                 // 无法识别的内容转换成字符串
+                // 支持自定义Parser规则样式
                 .setParserList(new JsonParser(), new UrlParser(), new ObjectParser());
 
         /**
          * 支持在程序中动态的改变print的设置
          */
         L.setTag("MBLog");
-        L.setPrint(true);
-        L.setParserList(new JsonParser(), new UrlParser(), new ObjectParser());
+        L.setPrint(L.PRINT.SYSTEM);
+        L.setParserList(new JsonParser());
     }
 }
 ```
@@ -81,9 +84,90 @@ public class App extends Application {
  * L.wtf(Object... args);
 
 # 其他
+
+### 自定义输出风格
 如果你想要自定义输出风格，可以自定义Printer，并初始化它
 
  * L.initPrinter(new MBPrinter())
+
+### 选择打印模式
+
+你可以动态的改变输出模式
+
+ * L.setPrint(L.PRINT.MBLOG);
+
+ 
+```java
+ public enum PRINT {
+        /**
+         * 不打印Log
+         */
+        NONE,
+        /**
+         * 使用系统默认Log打印
+         */
+        SYSTEM,
+        /**
+         * 使用MBLog格式化打印
+         */
+        MBLOG,
+        /**
+         * 使用MBLog格式化打印,但只打印内容,不打印方法和线程等信息
+         */
+        MBLOG_NOMETHOD
+ }
+```
+
+### 基于MBLog的封装
+
+如果你希望基于MBLog额外封装一层Log,以防止由于第三方库的变化影响项目
+
+* L.setLastMethodClassName("com.mblog.simple.SimpleLog");
+
+```java
+public class SimpleLog {
+
+    /**
+     * 假如希望在MBLog上封装一层自己的log
+     * 那么你需要额外设置最后一个方法偏移的类名
+     */
+    static {
+        L.setLastMethodClassName("com.mblog.simple.SimpleLog");
+    }
+
+    public static void d(Object... args) {
+        L.d(args);
+    }
+
+    public static void e(Object... args) {
+        L.e(args);
+    }
+
+    public static void e(Throwable throwable, Object... args) {
+        L.e(throwable, args);
+    }
+
+    public static void w(Object... args) {
+        L.w(args);
+    }
+
+    public static void i(Object... args) {
+        L.i(args);
+    }
+
+    public static void v(Object... args) {
+        L.v(args);
+    }
+
+    public static void wtf(Object... args) {
+        L.wtf(args);
+    }
+}
+```
+
+```java
+   SimpleLog.i("Test","Test","Test");
+```
 
 # Gradle Dependency
 
@@ -102,7 +186,7 @@ and:
 
 ```xml
 dependencies { 
-    compile 'com.github.w446108264:MBLog:1.0.0'
+    compile 'com.github.w446108264:MBLog:1.0.1'
 }
 ```
 
