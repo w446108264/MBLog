@@ -6,6 +6,8 @@ public interface Printer {
 
     L.Builder getLogBuilder();
 
+    void setLastMethodClassName(String className);
+
     void d(Object... args);
 
     void e(Object... args);

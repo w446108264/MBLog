@@ -67,6 +67,10 @@ public class L {
         getPrinter().getLogBuilder().setParserList(parsers);
     }
 
+    public static void setLastMethodClassName(String className) {
+        getPrinter().setLastMethodClassName(className);
+    }
+
     public static class Builder {
 
         public Builder setTag(String tag) {

@@ -77,6 +77,14 @@ public class MBPrinter implements Printer {
         return logBuilder;
     }
 
+    @Override
+    public void setLastMethodClassName(String className) {
+        if(TextUtils.isEmpty(className)){
+            return;
+        }
+        MBLOG_CLASSNAME = className;
+    }
+
     public void d(Object... args) {
         log(DEBUG, args);
     }
