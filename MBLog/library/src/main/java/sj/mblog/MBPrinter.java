@@ -50,6 +50,8 @@ public class MBPrinter implements Printer {
      */
     protected static String MBLOG_CLASSNAME;
 
+    protected static final int CHUNK_SIZE = 4000;
+
     protected L.Builder logBuilder;
 
     public MBPrinter() {
@@ -133,7 +135,7 @@ public class MBPrinter implements Printer {
         if(L.PRINT.NONE == logBuilder.printType){
             return;
         } else if(L.PRINT.SYSTEM == logBuilder.printType){
-            logChunk(logType, logBuilder.tag, getContent(args));
+            print(logType, logBuilder.tag, getContent(args));
             return;
         }
 
@@ -142,7 +144,7 @@ public class MBPrinter implements Printer {
             builder.append(getMethod() + "\n");
         }
         builder.append(getContent(args));
-        log(logType, logBuilder.tag, builder.toString());
+        logChunk(logType, logBuilder.tag, builder.toString());
     }
 
     protected String getMethod() {
@@ -195,16 +197,30 @@ public class MBPrinter implements Printer {
         return builder.toString();
     }
 
-    protected void log(int logType, String tag, String chunk) {
+    protected void logChunk(int logType, String tag, String chunk) {
+        byte[] bytes = chunk.getBytes();
+        int length = bytes.length;
+        if (length <= CHUNK_SIZE) {
+            printChunk(logType, tag, chunk);
+            return;
+        }
+        for (int i = 0; i < length; i += CHUNK_SIZE) {
+            int count = Math.min(length - i, CHUNK_SIZE);
+            //create a new String with system's default charset (which is UTF-8 for Android)
+            printChunk(logType, tag, new String(bytes, i, count));
+        }
+    }
+
+    protected void printChunk(int logType, String tag, String chunk) {
         String[] lines = chunk.split(System.getProperty("line.separator"));
         StringBuilder builder = new StringBuilder();
         for (String line : lines) {
             builder.append(line + "\n");
         }
-        logChunk(logType, tag, builder.toString());
+        print(logType, tag, chunk);
     }
 
-    protected void logChunk(int logType, String tag, String chunk) {
+    protected void print(int logType, String tag, String chunk) {
         switch (logType) {
             case ERROR:
                 Log.e(tag, chunk);

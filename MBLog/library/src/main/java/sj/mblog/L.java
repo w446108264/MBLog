@@ -125,9 +125,9 @@ public class L {
             return this;
         }
 
-        protected String tag;
-        protected PRINT printType = PRINT.MBLOG;
-        protected LinkedList<Parser> parserList;
+        public String tag;
+        public PRINT printType = PRINT.MBLOG;
+        public LinkedList<Parser> parserList;
 
         public Builder() {
         }
