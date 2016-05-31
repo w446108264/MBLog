@@ -21,14 +21,14 @@ public class JsonParser implements Parser {
                 JSONObject jsonObject = new JSONObject(result);
                 builder.append(result.substring(0, result.indexOf("{")));
                 builder.append(jsonObject.toString(JSON_INDENT));
-                builder.append(result.substring(result.indexOf("}") + 1, result.length()));
+                builder.append(result.substring(result.lastIndexOf("}") + 1, result.length()));
                 return builder.toString();
             }
             if (result.trim().startsWith("[") && result.trim().endsWith("]")) {
                 JSONArray jsonArray = new JSONArray(result);
                 builder.append(result.substring(0, result.indexOf("[")));
                 builder.append(jsonArray.toString(JSON_INDENT));
-                builder.append(result.substring(result.indexOf("]") + 1, result.length()));
+                builder.append(result.substring(result.lastIndexOf("]") + 1, result.length()));
                 return builder.toString();
             }
         } catch (JSONException e) {
