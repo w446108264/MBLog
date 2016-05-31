@@ -186,7 +186,7 @@ and:
 
 ```xml
 dependencies { 
-    compile 'com.github.w446108264:MBLog:1.0.1'
+    compile 'com.github.w446108264:MBLog:1.0.3'
 }
 ```
 
