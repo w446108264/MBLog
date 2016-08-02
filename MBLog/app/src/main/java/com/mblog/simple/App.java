@@ -2,6 +2,8 @@ package com.mblog.simple;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
+
 import sj.mblog.L;
 import sj.mblog.MBPrinter;
 import sj.mblog.parser.JsonParser;
@@ -31,5 +33,21 @@ public class App extends Application {
         L.setTag("MBLog");
         L.setPrint(L.PRINT.MBLOG);
         L.setParserList(new JsonParser(), new UrlParser(), new ObjectParser());
+
+
+        /**
+         * 支持chrome输出log调试
+         * 建议使用单独的buildtype, 确保release版本不包含stetho
+         */
+        initStetho();
+        L.initPrinter(new SuperMbPrinter());
+    }
+
+    private void initStetho() {
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+                        .build());
     }
 }
