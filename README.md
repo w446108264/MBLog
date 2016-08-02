@@ -169,6 +169,94 @@ public class SimpleLog {
    SimpleLog.i("Test","Test","Test");
 ```
 
+### 基于Stetho在chrome的console输出log
+ 
+1.引入stetho 
+
+```xml
+dependencies { 
+    debugCompile 'com.facebook.stetho:stetho:1.3.1'
+}
+```
+
+2.自定义MBPrinter
+
+```java
+public class SuperMbPrinter extends MBPrinter {
+
+    ConsolePeerManager sPeerManager;
+
+    public SuperMbPrinter() {
+        sPeerManager = ConsolePeerManager.getInstanceOrNull();
+    }
+
+    protected void print(int priority, String tag, String chunk) {
+        super.print(priority, tag, chunk);
+
+        if (sPeerManager == null) {
+            sPeerManager = ConsolePeerManager.getInstanceOrNull();
+        }
+
+        Console.MessageLevel logLevel;
+
+        switch (priority) {
+            case Log.VERBOSE:
+            case Log.DEBUG:
+                logLevel = Console.MessageLevel.DEBUG;
+                break;
+            case Log.INFO:
+                logLevel = Console.MessageLevel.LOG;
+                break;
+            case Log.WARN:
+                logLevel = Console.MessageLevel.WARNING;
+                break;
+            case Log.ERROR:
+            case Log.ASSERT:
+                logLevel = Console.MessageLevel.ERROR;
+                break;
+            default:
+                logLevel = Console.MessageLevel.LOG;
+        }
+
+        CLog.writeToConsole(
+                logLevel,
+                Console.MessageSource.OTHER,
+                chunk
+        );
+    }
+}
+```
+
+3.使用Printer
+
+```java
+        /**
+         * 支持chrome输出log调试
+         * 建议使用单独的buildtype, 确保release版本不包含stetho
+         */
+        Stetho.initialize(Stetho.newInitializerBuilder(this)
+              .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+              .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+              .build());
+              
+        L.initPrinter(new SuperMbPrinter());
+```
+ 
+ 
+# You can [download a sample APK](https://github.com/w446108264/MBLog/raw/master/output/app-debug.apk) 
+ 
+4.chrome浏览器输入chrome://inspect/#devices
+
+5.inspect
+
+<img src="https://github.com/w446108264/MBLog/raw/master/output/inspect.png"/> 
+
+6.在console获得log输出
+
+<img src="https://github.com/w446108264/MBLog/raw/master/output/chrome_console_log.png"/> 
+
+
+
 # Gradle Dependency
 
 Users of your library will need add the jitpack.io repository:
@@ -189,7 +277,8 @@ dependencies {
     compile 'com.github.w446108264:MBLog:1.0.3'
 }
 ```
-
+  
+ 
 # Thanks
 
 * [https://github.com/orhanobut/logger](https://github.com/orhanobut/logger)
